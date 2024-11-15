@@ -50,10 +50,13 @@ def main():
             elif command == "-x":
                 Increments[0] = Increment_step
                 Directions[0] = -1
-            else: 
+            elif command == "": 
                 Increments[0] = Increment_step
                 Increments[1] = 0
-
+            else:
+                Increments[0] = 0
+                Increments[1] = 0
+                print("Not a valid command")
             Positions, Directions = move_axis(Positions, Directions, Increments,Max_pos)
             print(f"X Pos:{Positions[0]:.1f}, Y Pos:{Positions[1]:.1f}\n")
             task.write(Positions)
