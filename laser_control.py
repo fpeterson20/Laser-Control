@@ -4,7 +4,7 @@ from nidaqmx.constants import LineGrouping
 
 def new_pos(pos, direction, increment, max_pos):
     new_pos = pos + direction*increment
-    if(abs(new_pos)>max_pos):
+    if(new_pos<max_pos[0] or new_pos>max_pos[1]):
         print("New position exceeds bounds. Changing direction\n")
         direction = -1*direction
         new_pos = pos + direction*increment
@@ -21,18 +21,18 @@ def move_axis(positions, directions, increments, max_pos):
 
 
 def main():
-    Increment_step = 0.5
-    Positions = [-Increment_step,0]
+    Increment_step = 0.05
+    Positions = [-1.7-Increment_step,0]
     Directions = [1,1]
     Increments = [Increment_step,0]
-    Max_pos = 5
+    Max_pos = [-3, -1.7]
     with nidaqmx.Task() as task:
         
         DataOff = [0,0]
         task.ao_channels.add_ao_voltage_chan("Dev1/ao0")
         task.ao_channels.add_ao_voltage_chan("Dev1/ao1")
         task.start()
-        command = ""
+        command = "+x"
 
         while(command != "n"):
             if command == "+y":
@@ -58,7 +58,7 @@ def main():
                 Increments[1] = 0
                 print("Not a valid command")
             Positions, Directions = move_axis(Positions, Directions, Increments,Max_pos)
-            print(f"X Pos:{Positions[0]:.1f}, Y Pos:{Positions[1]:.1f}\n")
+            print(f"X Pos:{Positions[0]:.2f}, Y Pos:{Positions[1]:.2f}\n")
             task.write(Positions)
             command = input("Type 'n' to stop else increase step\n")
 
